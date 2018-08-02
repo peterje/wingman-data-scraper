@@ -164,14 +164,6 @@ for m in match_path:
 
 	matches.append(m_match)
 
-def get_maps_played(match_list):
-	played = []
-	for m in match_list:
-		if m.map not in played:
-			played.append(m.map)
-	return played
-
-maps_played = get_maps_played(matches)
 labels = vars(matches[0])
 table = []
 table.append(labels)
