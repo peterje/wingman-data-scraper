@@ -7,6 +7,6 @@ To use this program:
 
 2. Place the html file in the same directory as this program.
 
-3. Run the command $python wingman.py "{steam_username}" "{html_file_name}". Note: quotes are neccesary.
+3. Run the command $python wingman.py "{steam_username}" "{html_file_name}". Note: quotes are necessary.
 
 4. A file 'wingman.csv' will be created in your current directory.
