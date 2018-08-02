@@ -1,8 +1,13 @@
 from lxml import etree
 from collections import Counter
 import pandas as pd
+import sys
+
+USERNAME = sys.argv[1]
+PATH = sys.argv[2]
+
 parser = etree.HTMLParser()
-tree = etree.parse("wingmancomplete.html", parser)
+tree = etree.parse(PATH, parser)
 
 class Match:
 	def __init__(
@@ -92,7 +97,6 @@ def get_usr_stats(m, username):
 
 	print("error: username not found")
 	return 1
-		# usr = m.xpath('./td[2]/table/tbody/tr/td[1]/div[2]/a[.=$name]', name=username)[0]
 
 def get_ping(usr):
 	return usr[1].text
@@ -130,7 +134,7 @@ for m in match_path:
 	m_time = get_time(m)
 	m_wait = get_wait(m)
 	m_duration = get_duration(m)
-	usr_stats,usr_pos = get_usr_stats(m, "grubhub")
+	usr_stats,usr_pos = get_usr_stats(m, USERNAME)
 	m_ping = get_ping(usr_stats)
 	m_kills = get_kills(usr_stats)
 	m_assists = get_assists(usr_stats)
