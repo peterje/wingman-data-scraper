@@ -9,6 +9,9 @@ PATH = sys.argv[2]
 parser = etree.HTMLParser()
 tree = etree.parse(PATH, parser)
 
+matches = []
+table = []
+
 class Match:
 	def __init__(
 		self,
@@ -127,7 +130,7 @@ def get_rounds(m, pos):
 	return rounds_for, rounds_against
 
 match_path = get_matches(tree)
-matches = []
+
 for m in match_path:
 	m_map = get_map(m)
 	m_date = get_date(m)
@@ -164,10 +167,6 @@ for m in match_path:
 
 	matches.append(m_match)
 
-labels = vars(matches[0])
-table = []
-table.append(labels)
-
 for m in matches:
 	data = vars(m)
 	row = []
@@ -175,9 +174,7 @@ for m in matches:
 		row.append(data[d])
 	table.append(row)
 
-headers = table.pop(0)
+headers = vars(Match)
 
 df = pd.DataFrame(table, columns=headers)
-
-
 df.to_csv("wingman.csv")
