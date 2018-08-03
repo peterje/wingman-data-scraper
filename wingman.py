@@ -1,5 +1,4 @@
 from lxml import etree
-from collections import Counter
 import pandas as pd
 import sys
 
@@ -9,7 +8,10 @@ PATH = sys.argv[2]
 parser = etree.HTMLParser()
 tree = etree.parse(PATH, parser)
 
+# will contain all Match objects
 matches = []
+
+# will contain the data of each match
 table = []
 
 class Match:
@@ -27,7 +29,7 @@ class Match:
 		mvps,
 		hsp,
 		score,
-		rounds_for, 
+		rounds_for,
 		rounds_against):
 
 
@@ -56,7 +58,7 @@ def nth_parent(t, n):
 def get_matches(t):
 	matches = t.xpath('//*[@id="personaldata_elements_container"]/table/tbody/tr')
 
-	return matches[1:]
+	return matches[1:] # skip first element, it is the table header.
 
 def get_map(m):
 	map_raw = m.xpath('./td[1]/table/tbody/tr[1]/td')[0].text
@@ -114,6 +116,7 @@ def get_deaths(usr):
 	return usr[4].text
 
 def get_mvps(usr):
+	# the html leaves a value of 0 as blank, this fixes that
 	return 0 if not usr[5].text.replace("★","").strip() else usr[5].text.replace("★","")
 	
 def get_hsp(usr):
@@ -124,6 +127,8 @@ def get_score(usr):
 
 def get_rounds(m, pos):
 	score_raw = m.xpath('./td[2]/table/tbody/tr[4]/td')[0].text.strip()
+	# if player is on the top of scoreboard, left score is taken
+	# if player is on bottom of scorebaord, right score is taken
 	rounds_for = score_raw[0] if pos < 4 else score_raw[-1]
 	rounds_against = score_raw[0] if pos > 4 else score_raw[-1]
 
@@ -167,14 +172,11 @@ for m in match_path:
 
 	matches.append(m_match)
 
+headers = [i for i in vars(matches[0])] # table headers: all data labels
+
 for m in matches:
-	data = vars(m)
-	row = []
-	for d in data:
-		row.append(data[d])
+	# row = a list of the value for each header
+	row = [vars(m)[i] for i in headers]
 	table.append(row)
-
-headers = vars(Match)
-
 df = pd.DataFrame(table, columns=headers)
 df.to_csv("wingman.csv")
