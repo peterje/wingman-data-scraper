@@ -127,7 +127,7 @@ def get_mvps(usr):
 	
 def get_hsp(usr):
 
-	return 0 if not usr[6].text.replace("%", "") else usr[6].text.replace("%", "")
+	return 0 if not usr[6].text.replace("%", "").strip() else usr[6].text.replace("%", "").strip()
 
 def get_score(usr):
 	return usr[7].text
@@ -186,4 +186,4 @@ for m in matches:
 	row = [vars(m)[i] for i in headers]
 	table.append(row)
 df = pd.DataFrame(table, columns=headers)
-df.to_csv(str(PATH[:-4]) + ".csv")
+df.to_csv(str(PATH[:-5]) + ".csv")
