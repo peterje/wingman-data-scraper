@@ -1,12 +1,22 @@
 # wingman-data-scraper
 A python program to convert an HTML file of CS:GO Wingman match history to a CSV file.
 
-To use this program:
+First run fetch_data.py, then run parse_data.py to format the data.
 
-1. Download your wingman html file from [here](https://steamcommunity.com/my/gcpd/730?tab=matchhistorywingman).
-  (I recommend [this](https://chrome.google.com/webstore/detail/save-page-we/dhhpefjklgkmgeafimnjhojgjamoafof) to save all the loaded data)
-2. Place the html file in the same directory as this program.
+Directions below:
 
-3. Run the command $python wingman.py "{steam_username}" "{html_file_name}". Note: quotes are necessary.
-
-4. A file 'wingman.csv' will be created in your current directory.
+# fetch_data.py
+  args: match-type (0 or 1)
+  
+  fetch_data.py 0 will fetch data for competitive matches
+  
+  fetch_data.py 1 will fetch data for wingman matches
+  
+  output: out-match-type.html
+  
+ # parse_data.py
+ args: username(string), html-file-location(string)
+ 
+ personalized stats will be created for username in matches
+ 
+ output: out-match-type.csv
