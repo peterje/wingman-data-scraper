@@ -8,6 +8,11 @@ PATH = sys.argv[2]
 parser = etree.HTMLParser()
 tree = etree.parse(PATH, parser)
 
+# depends on whether match is comp or wingman
+table_rows = len(tree.xpath('//*[@id="personaldata_elements_container"]/table/tbody/tr[3]/td[2]/table/tbody/tr'))
+players_per_team = (table_rows - 2) / 2 # subtract one for header row and one for score row
+score_index = table_rows - players_per_team
+
 # will contain all Match objects
 matches = []
 
@@ -62,7 +67,7 @@ def get_matches(t):
 
 def get_map(m):
 	map_raw = m.xpath('./td[1]/table/tbody/tr[1]/td')[0].text
-	map_format = map_raw.strip().replace("Wingman ", "")
+	map_format = map_raw.strip().replace("Wingman ", "").replace("Competitive ", "")
 
 	return map_format
 
@@ -91,7 +96,8 @@ def get_duration(m):
 	return duration_format
 
 def get_usr_stats(m, username):
-	for i in range(7):
+	# xpath is 1 indexed, while range is 0 indexed. must add 1 to end and start at 0
+	for i in range(1,table_rows+1):
 		try:
 			current_usr = m.xpath('./td[2]/table/tbody/tr[$index]/td[1]/div[2]/a', index = i)[0]
 			if current_usr.text == username:
@@ -120,17 +126,18 @@ def get_mvps(usr):
 	return 0 if not usr[5].text.replace("★","").strip() else usr[5].text.replace("★","")
 	
 def get_hsp(usr):
-	return usr[6].text
+
+	return 0 if not usr[6].text.replace("%", "") else usr[6].text.replace("%", "")
 
 def get_score(usr):
 	return usr[7].text
 
 def get_rounds(m, pos):
-	score_raw = m.xpath('./td[2]/table/tbody/tr[4]/td')[0].text.strip()
-	# if player is on the top of scoreboard, left score is taken
-	# if player is on bottom of scorebaord, right score is taken
-	rounds_for = score_raw[0] if pos < 4 else score_raw[-1]
-	rounds_against = score_raw[0] if pos > 4 else score_raw[-1]
+	score_raw = m.xpath('./td[2]/table/tbody/tr['+ str(score_index) +']/td')[0].text.strip().split(':')
+	# if player is on the top half of scoreboard, left score is taken
+	# if player is on bottom half of scorebaord, right score is taken
+	rounds_for = score_raw[0] if pos <= table_rows/2 else score_raw[1]
+	rounds_against = score_raw[0] if pos > table_rows/2 else score_raw[1]
 
 	return rounds_for, rounds_against
 
@@ -179,4 +186,4 @@ for m in matches:
 	row = [vars(m)[i] for i in headers]
 	table.append(row)
 df = pd.DataFrame(table, columns=headers)
-df.to_csv("wingman.csv")
+df.to_csv(str(PATH[:-4]) + ".csv")
