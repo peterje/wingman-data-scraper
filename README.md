@@ -5,7 +5,7 @@ First run fetch_data.py, then run parse_data.py to format the data.
 
 Directions below:
 
-# fetch_data.py
+## fetch_data.py
   args: match-type (0 or 1)
   
   fetch_data.py 0 will fetch data for competitive matches
@@ -14,7 +14,7 @@ Directions below:
   
   output: out-match-type.html
   
- # parse_data.py
+ ## parse_data.py
  args: username(string), html-file-location(string)
  
  personalized stats will be created for username in matches
