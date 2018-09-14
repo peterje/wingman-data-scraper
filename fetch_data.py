@@ -59,9 +59,3 @@ cont = driver.page_source
 f = open('out-' + mode + '.html', 'wb')
 f.write(cont.encode('utf8'))
 f.close()
-
-
-
-
-
-
